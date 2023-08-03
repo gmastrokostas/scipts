@@ -1,0 +1,46 @@
+#FIND COMMAND
+#Find by user and group
+find /home/ansible -user ansible -group ansible
+
+#Find empty files
+find /home/ansible -empty
+
+#Find and exclude directories
+find /home/ansible -type f -not \( -path "/home/ansible/*"  \)
+
+#Find empty files
+find /home/ansible -type f -empty
+
+#Find a file and create a backup of that file
+find /home/ansible -exec cp '{}' '{}'.backup \;
+
+#Find files with a specific set of permissions.
+find /home/automation/ -perm 755
+
+#Find files larger than X but smaller than Y
+find /home/ansible/ -size +5k -size -900k
+
+#Find files of a specific type but exclude other files of another type.
+fine /home/ansible -type f \( -iname *.conf ! -name *.conf \)
+
+#############################################
+#Manipulate text files                      #
+#############################################
+
+#Remove new line and replace with tabs
+tr "\n" "\t" << text
+
+#take a list of items from a file and combine to n values as dictated by the number of '-'
+paste -d '' - - - < text
+
+#Cut a field and use a dilimeter
+cut -d: -f3 /some_file
+
+#Capture original state of file and directory ownership
+find /home/    -printf "%u:%g %p\t\n" >> files
+
+
+
+
+
+
