@@ -1,0 +1,73 @@
+---
+- hosts: all
+  vars_files:
+    - vars/user_info.yml
+  tasks:
+  - name: Setup localhost
+    block:
+    - name: Create users locally
+      user:
+        name: "{{item.name}}"
+        generate_ssh_key: yes
+      loop: "{{usernames}}"
+    - name: Create local dires
+      file:
+        state: directory
+        path: /home/automation/tmp/files/{{item.name}}
+      loop: "{{usernames}}"
+    - name: Copy the ssh files
+      shell: cat /home/{{item.name}}/.ssh/id_rsa.pub > /home/automation/tmp/files/{{item.name}}/id_rsa.pub
+      loop: "{{usernames}}"
+    when: "'exam' in inventory_hostname"
+#################################################
+# vars file for setup_local_accounts
+#usergroups:
+#- groupname: developers
+#   sudo: True
+# - groupname: sales
+#   sudo: False
+#users:
+# - username: admin_100
+#   uid: 5678
+#   group: linuxadmin
+# - username: sales_100
+#   uid: 6789
+#   group: sales
+####################################################
+#{% for item in groupnames %}
+#{% if item.sudo %}
+#%{{item.name}}     ALL=(ALL)       NOPASSWD: ALL
+#{% endif %}
+#{% endfor %}
+####################################################
+- hosts: all
+  vars_files:
+    - vars/user_info.yml
+    - vars/secret.yml
+  tasks:
+  - name: Setup the remote servers
+    block:
+     - name: Create the groups first
+       group:
+         name: "{{item.name}}"
+       loop: "{{groupnames}}"
+     - name: Create the remote users
+       user:
+         name: "{{item.name}}"
+         uid: "{{item.uid}}"
+         group: "{{item.group}}"
+         password: "{{pass | password_hash('sha512')}}"
+       loop: "{{usernames}}"
+     - name: Setup SSH passwordless access
+       authorized_key:
+         user: "{{item.name}}"
+         state: present
+         key: "{{ lookup('file', '/home/automation/tmp/files/{{item.name}}/id_rsa.pub') }}"
+       loop: "{{usernames}}"
+       when:
+         - "item.uid | string | first=='3'" #and "'webservers' in group_hostnames"
+     - name: setup SUDO access
+       template:
+         src: sudousers.j2
+         dest: /etc/sudoers.d/sudousers
+

@@ -1,0 +1,6 @@
+---
+- name: Capture config files from recovery
+  fetch:
+    src: "{{item.conf}}"
+    dest: "{{globalpath}}"
+  loop: "{{recoveryconfigs}}"

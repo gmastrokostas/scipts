@@ -1,0 +1,7 @@
+---
+- name: Capture config files for main server
+  fetch:
+    src: "{{item.conf}}"
+    dest: "{{globalpath}}"
+  loop: "{{mainconfigs}}"
+

@@ -1,0 +1,80 @@
+#import the re module
+#define your regex variable
+
+####################   METHODS ##############################
+
+#SEARCH METHOD
+#The search() function: The search() function searches for a pattern within a string and return the first match.
+
+	lookup = re.search(regex, var1)
+	print(lookup.group()) # Will return the first match
+	print(lookup.start()) # Will return the position of the first match
+	print(lookup.end())   # Will return the position of the last match
+	print(lookup.span())  # Will return the positions
+	
+#---------------------
+
+#MATCH METHOD
+# It returns a Match object if it finds a pattern at the beginning of a string
+	lookup = re.match(regex, var1)
+	print(lookup)
+	#Return value
+	<_sre.SRE_Match object; span=(0, 1), match='1'>
+
+#---------------------
+
+
+#FULLMATCH METHOD
+#It returns a Match object if the whole string matches a pattern. It returns a "None" otherwise
+#Assuming 2021 is the string you are searching for
+#if var1 = "2021" then it will find it.  If var1 = "hello 2021" then it will not find it. 
+	lookup = re.fullmatch(regex, var1)
+	print(lookup)
+
+#---------------------
+
+
+#FINDALL METHOD
+#It scans the regex pattern through the entire target string and returns all the matches 
+#that were found in the form of a list.
+	lookup = re.finadll(regex, var1)
+	print(lookup)
+
+
+#---------------------------------------------------------------
+
+
+####################    SPECIAL SEQUENCES ###############################################
+\d  Matches any decimal digit; this is equivalent to the class [0-9].
+
+\D  Matches any non-digit character; this is equivalent to the class [^0-9].
+
+\s  Matches any whitespace character; this is equivalent to the class [ \t\n\r\f\v].
+
+\S  Matches any non-whitespace character; this is equivalent to the class [^ \t\n\r\f\v].
+
+\w  Matches any alphanumeric character; this is equivalent to the class [a-zA-Z0-9_].
+
+\W  Matches any non-alphanumeric character; this is equivalent to the class [^a-zA-Z0-9_].
+###########################################################################################
+
+#---------------------------------------------------------------
+
+
+####################    METACHARACTERS ###############################################
+. (DOT)		Matches any character except a newline.
+^ (Caret)	Matches pattern only at the start of the string.
+$ (Dollar)	Matches pattern at the end of the string.
+* (asterisk)	Matches 0 or more repetitions of the regex.
++ (Plus)	Match 1 or more repetitions of the regex.
+? (Question mark)	Match 0 or 1 repetition of the regex.
+[] (Square brackets)	Used to indicate a set of characters. Matches any single character in brackets. For example, [abc] will match either a, or, b, or c character.
+| (Pipe)	used to specify multiple patterns. For example, P1|P2, where P1 and P2 are two different regexes.
+\ (backslash)	Use to escape special characters or signals a special sequence. For example, If you are searching for one of the special characters you can use a \ to escape them.
+[^...]	Matches any single character not in brackets.
+(...)	Matches whatever regular expression is inside the parentheses. For example, (abc) will match to substring 'abc'
+{2}	Matches only 2 copies of the preceding regex. For example, p{3} matches exactly three 'p' characters, but not four.
+{2, 4}	Match 2 to 4 repetitions of the preceding regex. For example, a{2,4} matches any string that contains 3 to 5 'a' characters.
+{3,}	Matches minimum 3 copies of the preceding regex. It will try to match as many repetitions as possible.
+For example, p{3,} matches a minimum of three 'p' characters.
+###########################################################################################

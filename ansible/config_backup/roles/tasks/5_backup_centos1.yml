@@ -1,0 +1,6 @@
+---
+- name: Capture config files from centos1
+  fetch:
+    src: "{{item.conf}}"
+    dest: "{{globalpath}}"
+  loop: "{{centos1configs}}"

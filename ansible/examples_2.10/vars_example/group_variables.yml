@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: True
+  become_method: sudo
+  become_user: root
+  tasks:
+  - name: Display group var
+    debug:
+      msg: "{{databases}}"
+  - name: Print hostvars
+    debug:
+      msg: "{{hostvars}}"
+  - name: Print groups
+    debug:
+      msg: "{{groups}}"
+  - name: Print inventory_hostnames
+    debug:
+      msg: "{{inventory_hostname}}"
+  - name: Print Inventory File
+    debug:
+      msg: "{{inventory_file}}"
+  - name: Print group_names
+    debug:
+      msg: "{{group_names}}"
+  - name: Print group elements
+    debug:
+      msg: "{{groups['infra']}}"

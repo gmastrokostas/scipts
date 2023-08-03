@@ -1,0 +1,7 @@
+---
+- name: Capture  config files for hpv1
+  fetch:
+    src: "{{item.conf}}"
+    dest: "{{globalpath}}"
+  loop: "{{hpv1configs}}"
+

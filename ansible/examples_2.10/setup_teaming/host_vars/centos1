@@ -1,0 +1,13 @@
+device_name_9s: enp9s0
+on_boot_9s: yes
+teammaster_9s: team0
+device_type_9s: TeamPort
+
+device_name_10s: enp10s0
+on_boot_10s: yes
+teammaster_10s: team0
+device_type_10s: TeamPort
+
+ip_addr: 192.168.1.247
+net_mask: 255.255.255.224
+

@@ -1,0 +1,11 @@
+#NFS SHARES
+#Stash share 
+/hpv1_storage/nfs_share/stash 192.168.2.149/32(rw,sync,no_subtree_check)
+
+##Apache NFS share
+/hpv1_storage/nfs_share/http_nfs_share 192.168.2.200/32(rw,sync,no_subtree_check)
+
+#Share for my RHCE tests
+/hpv1_storage/nfs_share/rhce 192.168.1.233/32(rw,sync,no_subtree_check)
+
+

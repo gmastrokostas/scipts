@@ -1,0 +1,88 @@
+- hosts: hpv1
+  become: True
+  become_user: root
+  become_method: sudo
+  vars:
+    list_1: "{{ansible_devices.values() | list}}"
+
+  tasks:
+#PRINTING PURE DICTIONARIES
+# "ansible_default_ipv4": {
+#            "address": "192.168.1.128",
+#            "alias": "bridge0",
+#            "broadcast": "192.168.1.255",
+#            "gateway": "192.168.1.1",
+#            "interface": "bridge0",
+#            "macaddress": "00:0a:cd:3a:f6:bc",
+#            "mtu": 1500,
+#            "netmask": "255.255.255.0",
+#            "network": "192.168.1.0",
+#            "type": "bridge"
+#        },
+
+  - name: Print the value of a specific key
+    debug:
+      msg: "{{ansible_default_ipv4['address']}}"
+
+  - name: Print the values for each key in this dictionary
+    debug:
+      msg: "{{item}}"
+    loop: "{{ansible_default_ipv4.values()}}"
+  
+  - name: Print all keys for this dictionary
+    debug:
+      msg: "{{item}}"
+    loop: "{{ansible_default_ipv4.keys()}}"
+
+####PRINT DICTIONARIES THAT CONTAIN LISTS
+#"ansible_device_links": {
+#            "ids": {
+#                "dm-0": [
+#                    "dm-name-cs-root",
+#                    "dm-uuid-LVM-noJkzVSWl8NJ0fl5dbDRuKiMDY93B7vkAJKgm0FII4TYcl7J7pHfPXUuO88Bkk5R"
+#                ],
+#                "dm-1": [
+#                    "dm-name-cs-swap",
+#                    "dm-uuid-LVM-noJkzVSWl8NJ0fl5dbDRuKiMDY93B7vkJEAuiP6ypCEjSYc1yQEONtegiQttdcd5"
+#                ],
+#                }
+  - name: Print the value of IDS key and then print the 0 element of the list dm-0 
+    debug:
+      msg: "{{ansible_device_links['ids']['dm-0'][0]}}"
+      
+
+        
+#"ansible_devices": {
+#            "dm-0": {
+#                "holders": [],
+#                "host": "",
+#                "links": {
+#                    "ids": [
+#                        "dm-name-cs-root",
+#                        "dm-uuid-LVM-noJkzVSWl8NJ0fl5dbDRuKiMDY93B7vkAJKgm0FII4TYcl7J7pHfPXUuO88Bkk5R"
+#                    ],
+#                    "labels": [],
+#                    "masters": [],
+#                    "uuids": [
+#                        "0197cc69-7b48-45d3-9936-b105300e8230"
+#                    ]
+#                },
+  - name: Print the values of ids -> links  and then print the 0 element of list ids  
+    debug:
+      msg: "{{ansible_devices['dm-0']['links']['ids'][0]}}"
+  
+  - name: Convert a dictionary to a list -- See definition of list_1 at top of playbook
+    debug:
+      msg: "{{list_1}}"
+
+#This now is a list with dictionaries. You can treat as a normal list with dictionaries
+#See commented out "msg"
+  - name: Now all keys like(dm-0 and dm-1) have been converted into a list
+    debug:
+      #msg: "{{list_1.keys()}}"
+      msg: "{{list_1[0].size}}"
+
+
+
+
+

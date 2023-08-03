@@ -1,0 +1,29 @@
+---
+globalpath: /hpv1_storage/stash/github_code/ansible/roles/config_backup/backed_files/
+backedconfigs: /hpv1_storage/stash/github_code/ansible/roles/config_backup/backed_files/
+githubcode: /hpv0_storage/hpv1_nfs/stash/github_code/LinuxAdmin/
+
+hpv1configs:
+  - conf: /etc/exports
+  - conf: /etc/samba/smb.conf
+  - conf: /etc/httpd/conf/httpd.conf
+  - conf: /etc/httpd/sites-available/nfs_http_test.lol.conf
+  - conf: /usr/sbin/vm_checker.sh
+
+mainconfigs:
+  - conf: /etc/exports
+
+databasecentos8configs:
+  - conf: /home/seeker/tools/project_scripts/main.yml
+  - conf: /home/seeker/tools/project_scripts/template.j2
+  - conf: /home/seeker/tools/project_scripts/packages.j2
+  - conf: /var/lib/pgsql/14/data/postgresql.conf
+  - conf: /var/lib/pgsql/14/data/pg_hba.conf
+
+gitrepos:
+ - repo: AWS-Architect-Associate
+ - repo: bash_linux_admin
+ - repo: LinuxAdmin
+ - repo: ansible
+ - repo: python3
+##- repo: postgres

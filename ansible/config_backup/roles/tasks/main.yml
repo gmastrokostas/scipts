@@ -1,0 +1,55 @@
+---
+# tasks file for config_backup
+
+- include_tasks:  1_backup_hpv0.yml
+  when: "'hpv0' in group_names"
+
+- include_tasks: 2_backup_hpv1.yml
+  when: "'hpv1' in group_names" 
+
+- include_tasks: 3_backup_main.yml
+  when: "'main' in inventory_hostname"
+
+- include_tasks: 4_backup_main.yml
+  when: "'recovery' in inventory_hostname"
+
+- include_tasks: 5_backup_centos1.yml
+  when: "'centos1' in inventory_hostname"
+
+- include_tasks: 6_backup_database-centos8.yml
+  when: "'database-centos8' in inventory_hostname"
+
+
+- name: Do a git pull for all git repos
+  shell: cd /hpv1_storage/stash/github_code/"{{item.repo}}"; git pull
+  loop: "{{gitrepos}}"
+  when: "'hpv1' in group_names"
+  delegate_to: 127.0.0.1
+  become: True
+  become_user: ansible
+
+- name: Do a git add for all repos
+  shell: cd /hpv1_storage/stash/github_code/"{{item.repo}}"; git add *
+  delegate_to: 127.0.0.1
+  become: True
+  become_user: ansible
+  when: "'hpv1' in group_names"
+  loop: "{{gitrepos}}"
+
+- name: Do a git commit for all repos
+  shell:  cd /hpv1_storage/stash/github_code/"{{item.repo}}"; git commit -m "automatic commit via ansible"
+  delegate_to: 127.0.0.1
+  become: True
+  become_user: ansible
+  when: "'hpv1' in group_names"
+  loop: "{{gitrepos}}"
+  ignore_errors: yes
+
+- name: Do a git push for all repos
+  shell: cd /hpv1_storage/stash/github_code/"{{item.repo}}"; git push
+  delegate_to: 127.0.0.1
+  become: True
+  become_user: ansible
+  when: "'hpv1' in group_names"
+  loop: "{{gitrepos}}"
+

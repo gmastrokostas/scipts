@@ -1,0 +1,10 @@
+PEERDNS=no
+DEVICE=team0
+DEVICETYPE=Team
+ONBOOT=yes
+BOOTPROTO=static
+DEFROUTE=yes
+IPV6_DEFROUTE=yes
+TEAM_CONFIG='{"runner": {"name": "activebackup"}, "link_watch": {"name": "ethtool"}}'
+IPADDR={{ip_addr}}
+NETMASK={{net_mask}}

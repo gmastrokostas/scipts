@@ -1,0 +1,18 @@
+- hosts: all
+  become: True
+  become_user: root
+  become_method: sudo
+  tasks:
+  - name: templating enp10s0
+    template:
+      src: templates/ifcfg-enp10s0.j2
+      dest: /etc/sysconfig/network-scripts/ifcfg-enp10s0
+  - name:  templating enp9s0
+    template:
+      src: templates/ifcfg-enp9s0.j2
+      dest: /etc/sysconfig/network-scripts/ifcfg-enp9s0
+  - name: templating team0
+    template:
+      src: templates/ifcfg-team0.j2
+      dest: /etc/sysconfig/network-scripts/ifcfg-team0
+

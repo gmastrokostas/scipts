@@ -1,0 +1,39 @@
+#Comment
+127.0.0.1	localhost
+127.0.1.1	hpv0
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+
+#My Physical hosts for ansible
+192.168.2.200 hpv1
+192.168.1.148 hpv0
+
+#My VIRSH virtual machines on hpv0
+192.168.1.246 centos1
+192.168.1.216 centos2
+192.168.1.133 centos3
+192.168.1.173 centos4
+192.168.1.31  ex180
+192.168.1.159 mule
+
+#My VIRSH virtual machines on hpv1
+192.168.1.219 centos5
+192.168.1.91  centos6
+
+#Vmware workstation machines
+192.168.1.44 recovery
+
+#NFS and TOWER
+192.168.1.28  main
+192.168.1.53 client
+
+#testing my postgresl scripts
+192.168.1.50 database-centos8
+#Client machines
+192.168.1.53 client

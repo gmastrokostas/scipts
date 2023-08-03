@@ -1,0 +1,33 @@
+- hosts: [all]
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  become_user: root
+  
+  
+  vars:
+    clown4: clown4
+    clown5: clown5
+  
+  tasks:
+    #Add one user
+    - name: Add one user
+      user:
+        name: clown
+        state: present
+
+    - name: Add users from a local loop
+      user:
+        name: "{{item}}"
+        state: present
+      loop:
+          - clown1
+          - clown2
+          - clown3
+
+    - include_vars: main.yml
+    - name: Add users from variables file
+      user:
+        name: "{{item.username}}"
+      loop: "{{users}}"
+      

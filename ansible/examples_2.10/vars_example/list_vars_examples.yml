@@ -1,0 +1,64 @@
+- hosts: hpv1
+  become: True
+  become_user: root
+  become_method: sudo
+  tasks:
+
+###LOOPING THROUGH PURE LISTS
+#        "ansible_all_ipv4_addresses": [
+#            "192.168.2.200",
+#            "192.168.1.128",
+#            "192.168.1.200",
+#            "192.168.122.1"
+#        ],
+
+  - name: Print an element of a list
+    debug:
+      msg: "{{ansible_all_ipv4_addresses[0]}}"
+
+  - name: Print all elements from a list
+    debug:
+      msg: "{{ansible_all_ipv4_addresses}}"
+
+  - name: Print the 0 zero element of a list
+    debug:
+      msg: "{{ansible_all_ipv4_addresses[0]}}"    
+
+  - name: Loop through all elements from a list
+    debug:
+      msg: "{{item}}"
+    loop: "{{ansible_all_ipv4_addresses}}"
+
+###LOOPING THROUGH LISTS WITH DICTIONARIES
+#"ansible_mounts": [
+#            {
+#                "block_available": 122941288,
+#                "block_size": 4096,
+#                "block_total": 242790576,
+#                "block_used": 119849288,
+#                "device": "/dev/mapper/cs-root",
+#                "fstype": "xfs",
+#                "inode_available": 485461636,
+#                "inode_total": 485818368,
+#                "inode_used": 356732,
+#                "mount": "/",
+#                "options": "rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota",
+#                "size_available": 503567515648,
+#                "size_total": 994470199296,
+#                "uuid": "0197cc69-7b48-45d3-9936-b105300e8230"
+#            },
+#]
+  - name: Print 0 element of this list that contains dictionaries
+    debug:
+      msg: "{{ansible_mounts[0]}}"
+  - name: Print 0 element of this list and then print all keys of the dictionary inside
+    debug:
+      msg: "{{ansible_mounts[0].keys()}}"
+  - name: Print 0 element of this list and then print all values of the dictionary inside
+    debug:
+      msg: "{{ansible_mounts[0].values()}}"
+
+  - name: Print 0 element of this list and then print a specific key from the dictionary inside
+    debug:
+      msg: "{{ansible_mounts[0].fstype}}"
+

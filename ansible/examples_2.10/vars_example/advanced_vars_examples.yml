@@ -1,0 +1,224 @@
+#EXAMPLES of  Printing from dictionary that contains lists
+
+#fact for drive sdc :  {{ansible_devices}}
+            "sdc": {
+                "holders": [],
+                "host": "IDE interface: Intel Corporation 82801JI (ICH10 Family) 4 port SATA IDE Controller #1",
+                "links": {
+                    "ids": [
+                        "ata-ST4000VN008-2DR166_ZGY771ZE",
+                        "scsi-0ATA_ST4000VN008-2DR1_ZGY771ZE",
+                        "scsi-1ATA_ST4000VN008-2DR166_ZGY771ZE",
+                        "scsi-35000c500c6091923",
+                        "scsi-SATA_ST4000VN008-2DR1_ZGY771ZE",
+                        "wwn-0x5000c500c6091923"
+                    ],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": "ST4000VN008-2DR1",
+                "partitions": {
+                    "sdc1": {
+                        "holders": [
+                            "vg_storage-lv_storage"
+                        ],
+                        "links": {
+                            "ids": [
+                                "ata-ST4000VN008-2DR166_ZGY771ZE-part1",
+                                "lvm-pv-uuid-WM3ns1-r3mq-YZe6-HfGB-MJO6-Cl7K-nposYx",
+                                "scsi-0ATA_ST4000VN008-2DR1_ZGY771ZE-part1",
+                                "scsi-1ATA_ST4000VN008-2DR166_ZGY771ZE-part1",
+                                "scsi-35000c500c6091923-part1",
+                                "scsi-SATA_ST4000VN008-2DR1_ZGY771ZE-part1",
+                                "wwn-0x5000c500c6091923-part1"
+                            ],
+                            "labels": [],
+                            "masters": [
+                                "dm-2"
+                            ],
+                            "uuids": []
+                        },
+                        "sectors": "7735896064",
+                        "sectorsize": 512,
+                        "size": "3.60 TB",
+                        "start": "78139392",
+                        "uuid": null
+                    }
+                },
+                "removable": "0",
+                "rotational": "1",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "mq-deadline",
+                "sectors": "7814037168",
+                "sectorsize": "512",
+                "size": "3.64 TB",
+                "support_discard": "0",
+                "vendor": "ATA",
+                "virtual": 1,
+                "wwn": "0x5000c500c6091923"
+            },
+################################################################################################3
+#Example1: Hard coding it
+- name: Print from a dictionary that has a list within it.
+  debug:
+    msg: "{{ansible_device_links.ids.sdc[2]}}"
+
+TASK [Print from a dictionary that has a list within it.] **********************
+ok: [hpv1] => {
+    "msg": "scsi-1ATA_ST4000VN008-2DR166_ZGY771ZE"
+}
+################################################################################################3
+#Example2: Converting a dictionary to a list and referencing the element
+#of the list and then the key value of the dictionary within the list..
+#This will print the third element from the list (sdc inour example)
+#and print the model key value
+vars:
+  list_1: "{{ansible_devices.values() | list}}"
+
+- name: printing
+    debug:
+      msg: "{{list_1[3].model}}"
+
+TASK [printing] ****************************************************************
+ok: [hpv1] => {
+    "msg": "Dual SATA Bridge"
+}
+
+################################################################################################
+#Example3: Convert they keys into a list and then count the elements in the list
+  vars:
+    list_1: "{{ansible_devices.values() | list}}"
+    freqnc: "{{list_1|length}}"
+  tasks:
+  - name: printing
+    debug:
+      msg: "{{item}}"
+    with_sequence: start=0 end="{{freqnc}}"
+  - name: printing_2
+    debug:
+      msg: "{{ansible_devices.keys()}}"
+#TEMPLATING EXAMPLES
+#for loop
+{% for server in groups['webservers'] %}
+server {{hostvars[server]['ansible_hostname']}} {{hostvars[server]['ansible_default_ipv4']['address']}} cookie {{hostvars[server]['ansible_hostname']}} check
+{% endfor %}
+
+
+#######Dictionaries
+#print the keys of a dictionary
+- name: print dict keys
+    debug:
+      msg: "{{item}}"
+    loop: "{{ansible_device_links.values()}}"
+
+---
+- hosts: all
+  
+  tasks:
+
+    - name: Determine if this is a list or a dictionary
+      debug:
+        msg: "{{ansible_mounts | type_debug}}"
+
+    - name: Print the values from a list
+      debug:
+        msg: "{{ansible_mounts}}"
+
+#SELECTATTRIBUTE  SECTION
+#This will list all the attributes for this specific fact.
+#Provided that 'fstype' will will meet the criteria of either
+# 'search'  or 'equalto' or 'match', 'undefined', 'defined' or ''  "
+
+    - name: Select the fstype attribute as long it has a value/defined.
+      debug:
+        msg: "{{ansible_mounts | selectattr('fstype',  'defined' ) }}"
+      tags: defined
+
+    - name: Select the mount attribute as long as it not defined
+      debug:
+        msg: "{{ansible_mounts | selectattr('mount', 'undefined') }} "
+
+##SELECTATTRIBUTE WITH MAPPING
+#If for example you are searching for fstype and its a match
+#you can specify to display a different attribute when a match occurs.
+#For example when fstype == xfs then display attribute device
+
+    - name: Select the device attribute as long as fstype is xfs
+      debug:
+        msg: "{{ansible_mounts | selectattr('fstype', 'equalto', 'xfs') | map(attribute='device') }}"
+
+##We can do the same by using a loop.
+
+    - name: Select the device attribute as long as fstype is xfs
+      debug:
+        msg: "{{item.device}}"
+      with_items: 
+        - "{{ansible_mounts}}"
+      when:
+        - "{{item.fstype == 'xfs'}}"
+      loop_control:
+        label: "{{item.mount}}"
+
+#################################################
+#Going through a dictionary.
+
+    - name: Printing a specific value from a dictionary.
+      debug:
+        msg: "{{ansible_cmdline.BOOT_IMAGE}}"
+##################################################
+
+#####Playing with 'select'        
+
+    - name: Print interfaces
+      debug:
+        msg: "{{ansible_interfaces | select('match', 'virbr0') }}"
+
+    - name: print mounts
+      debug:
+        msg: "{{ansible_mounts | select('match', 'xfs') }}"
+###############################################################
+#This will do the first loop and also respect the conditions
+#for the second loop
+- hosts: all
+  vars_files:
+    - vars/secret.yml
+    - vars/user_info.yml
+  tasks:
+  - name: Create groups
+    group:
+      name: "{{item.name}}"
+    loop: "{{groupnames}}"
+    when:
+      - "'webservers' in group_names"
+      - "item.uid|string|first == '2'"
+      - "'exam' not in group_names"
+    loop: "{{usernames}}"
+
+##########Convert a dictionary to a list
+- hosts: all
+  become: True
+  become_method: sudo
+  become_user: root
+  vars:
+    list_1: "{{ansible_devices.values() | list}}"
+  tasks:
+  - name: print contents of a list
+    debug:
+      msg: "{{item}}"
+    loop: "{{list_1}}"
+#PRINT FROM A DICTIONARY THAT HAS A LIST IN IT
+#
+"device_links": {
+    "ids": {
+      "sda": [
+         "ata-ST4000VN008-2DR166_ZGY771ZE",
+         "scsi-0ATA_ST4000VN008-2DR1_ZGY771ZE",
+         "wwn-0x5000c500c6091923"
+]},
+
+- name: Print from a dictionary that has a list within it.
+    debug:
+      msg: "{{ansible_device_links.ids.sda[2]}}"
+

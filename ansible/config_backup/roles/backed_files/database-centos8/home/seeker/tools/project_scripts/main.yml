@@ -1,0 +1,64 @@
+#COMMENT
+- hosts: all
+  become: True
+  become_method: sudo
+  become_user: root
+  tasks:
+  
+  - name: Assert that we can connect to all servers
+    assert:
+      that: "ansible_hostname is defined"
+  - name: template data for servers table
+    template:
+      src: template.j2
+      dest: /var/tmp/info.csv
+  - name: Load rpm ansible facts
+    package_facts:
+      manager: auto
+    register: rpm_packages
+
+  - name: template data for software table
+    template:
+      src: packages.j2
+      dest: /var/tmp/packages.csv
+  - name: Fetch the remote templated files
+    fetch:
+      src: /var/tmp/{{item}}
+      dest: /home/seeker/tools/project_scripts/servers
+    loop:
+      - info.csv
+      - packages.csv
+
+############################################################################################################
+#Clean up all tables
+- hosts: localhost
+  tasks:
+
+  - name: Clean up all tables
+    shell: psql -d serverdata -c "truncate table servers cascade"
+
+  - name: Upload the server data to the database
+    postgresql_copy:
+      copy_from: /home/seeker/tools/project_scripts/servers/{{item}}/var/tmp/info.csv
+      dst: servers
+      db: serverdata
+      login_user: seeker
+      options:
+        delimiter: '|'
+        format: csv
+    loop: "{{groups['all']}}"
+    tags:
+     - serverdata
+
+  - name: Upload the rpm data to the database
+    postgresql_copy:
+      copy_from: /home/seeker/tools/project_scripts/servers/{{item}}/var/tmp/packages.csv
+      dst: rpm_packages
+      db: serverdata
+      login_user: seeker
+      options:
+        delimiter: ','
+        format: csv
+    loop: "{{groups['all']}}"    
+    tags:
+     - rpmdata

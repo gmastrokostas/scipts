@@ -1,0 +1,6 @@
+pip-3.6 install virtualenv
+python3.6 -m venv testing
+python3.6 -m pip install psuti
+source bin/activate
+pip3.6 install pyinstaller
+pyinstaller -F interface_info.py

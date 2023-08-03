@@ -1,0 +1,63 @@
+---
+- hosts: all
+  gather_facts: no
+
+  vars:
+    text: george
+    text2: jim
+
+  tasks:
+   - name: Print output
+     command: echo "hello there"
+     register: hello
+   - debug:
+      msg: "stdout={{hello.stdout}}"
+#Detect if there is an output and take actions
+   - debug:
+      msg: "stderr={{hello.stderr}}"
+   - debug:
+      msg: "No errors"
+     when: hello.stderr == ""
+#Search for text and set conditional according to search result
+  tasks:
+    - name: Print variable
+      debug:
+        var: text
+      #when: text.find("hello") != -1
+      when: "{{text2 in text}}"
+
+    - name: Print outpute from ls command
+      shell: ls -l /home
+      register: output
+    - debug:
+        msg: "{{output.stdout_lines}}"
+
+
+#Search for string and add value to a paremeter using ansible facts
+   - name: Find text in script
+     lineinfile:
+      state: present
+      path: /home/ansible/program1.sh
+      regexp: '^hostname='
+      line: hostname={{ansible_hostname}}
+      owner: ansible
+      group: ansible
+      mode: 770
+
+   - name: Add comment at top of file
+     lineinfile:
+      state: present
+      path: /home/ansible/program1.sh
+      insertbefore: '^hostname='
+      line: Start of block
+      
+   - name: Add comment at bottom of file
+     lineinfile:
+      state: present
+      path: /home/ansible/program1.sh
+      insertafter: EOF
+      line: End
+
+
+
+
